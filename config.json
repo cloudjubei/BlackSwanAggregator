@@ -1,0 +1,48 @@
+{
+    "type" : "signal",
+    "identifier": "aggregator",
+    "tokens" : [
+        "BTCBUSD",
+        "BTCTUSD"
+    ],
+    "signals_input" : {
+        "manual": {
+            "port": 3003,
+            "tokens": ["BTCBUSD", "BTCTUSD"]
+        },
+        "linear-regression": {
+            "port": 3004,
+            "tokens": ["BTCBUSD", "BTCTUSD"]
+        }
+    },
+    "identifiers_out": ["sum1", "average1", "nested1", "max1"],
+    "signals_output" : {
+        "sum1": {
+            "type": "SUM",
+            "signals": ["manual", "linear-regression"],
+            "tokens": ["BTCBUSD"]
+        },
+        "average1": {
+            "type": "AVERAGE",
+            "signals": ["manual", "linear-regression"],
+            "tokens": ["BTCBUSD"],
+            "samples_required": 3
+        },
+        "min1": {
+            "type": "MINIMUM",
+            "signals": ["manual", "linear-regression"],
+            "tokens": ["BTCBUSD"],
+            "resets_every_tick": true
+        },
+        "max1": {
+            "type": "MAXIMUM",
+            "signals": ["manual", "linear-regression"],
+            "tokens": ["BTCBUSD"]
+        },
+        "nested1": {
+            "type": "SUM",
+            "signals": ["$min1", "$sum1", "manual"],
+            "tokens": ["BTCBUSD"]
+        }
+    }
+}
