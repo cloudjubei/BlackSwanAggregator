@@ -63,10 +63,9 @@ export class SignalService implements OnApplicationBootstrap
 
         const signalIds = this.signalInputService.getAllSignals()
         for(const signalId of signalIds){
-            const port = this.signalInputService.getSignalPort(signalId)
-            const tokens = this.signalInputService.getSignalTokens(signalId)
-            for(const token of tokens){
-                this.wsInputService.listen(port, token, (signal) => {
+            const signalConfig = this.signalInputService.getSignal(signalId)
+            for(const token of signalConfig.tokens){
+                this.wsInputService.listen(signalConfig.port, token, (signal) => {
                     console.log("LISTENED TO SIGNAL: ", signal)
                 })
             }
@@ -77,16 +76,16 @@ export class SignalService implements OnApplicationBootstrap
     {
         const ids = this.signalInputService.getAllSignals()
         for(const id of ids){
-            const port = this.signalInputService.getSignalPort(id)
-            for(const token of this.signalInputService.getSignalTokens(id)){
+            const signalConfig = this.signalInputService.getSignal(id)
+            for(const token of signalConfig.tokens){
                 try{
-                    const signal = await this.wsInputService.sendMessage(port, "signal_latest", token)
+                    const signal = await this.wsInputService.sendMessage(signalConfig.port, "signal_latest", token)
                     if (signal){
-                        this.signalInputService.storeInCache(id, signal as SignalModel)
+                        this.signalOutputService.storeInCache(id, signal as SignalModel)
                     }
                 }catch(error){
                     // TODO: handle multiple timeouts
-                    console.error("updateSignals id: " + id + " port: " + port + " token: " + token + " error: ", error)
+                    console.error("updateSignals id: " + id + " port: " + signalConfig.port + " token: " + token + " error: ", error)
                 }
             }
         }
@@ -97,18 +96,11 @@ export class SignalService implements OnApplicationBootstrap
         const ids = this.signalOutputService.getAllSignals()
         for(const id of ids){
             for(const token of this.signalOutputService.getSignalTokens(id)){
-                const signal = this.updateSignal(id, token)
-                if (signal) {
-                    this.signalOutputService.storeInCache(id, signal)
-                    await this.wsOutputService.sendUpdate(id, signal.tokenPair, signal.action)
-                }
+                const signal = this.signalOutputService.updateSignal(id, token)
+
+                this.signalOutputService.storeInCache(id, signal)
+                await this.wsOutputService.sendUpdate(id, token, signal.action)
             }
         }
-    }
-
-    private updateSignal(id: string, token: string) : SignalModel
-    {
-        //TODO:
-        return new SignalModel(token, 0, Date.now(), 1)
     }
 }

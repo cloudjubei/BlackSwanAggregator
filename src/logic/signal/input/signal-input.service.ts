@@ -2,13 +2,11 @@ import { Injectable } from '@nestjs/common'
 import { getFile } from 'src/lib/storageUtils'
 import ConfigModel from 'src/models/config/ConfigModel.dto'
 import ConfigSignalInputModel from 'src/models/config/ConfigSignalInputModel.dto'
-import SignalModel from 'src/models/signal/SignalModel.dto'
 
 @Injectable()
 export class SignalInputService
 {
-    private cache: { [id: string]: {[token: string] : SignalModel} } = {}
-    private ports: { [id: string]: number } = {}
+    private signalsConfig: { [id: string]: ConfigSignalInputModel } = {}
 
     constructor()
     {
@@ -18,36 +16,23 @@ export class SignalInputService
             this.add(signal, config.signals_input[signal])
         }
     }
-
-    storeInCache(id: string, signal: SignalModel)
-    {
-        this.cache[id][signal.tokenPair] = signal
-    }
-    getFromCache(id: string, token: string) : SignalModel
-    {
-        return this.cache[id][token]
-    }
   
     getAllSignals() : string[]
     {
-        return Object.keys(this.cache)
+        return Object.keys(this.signalsConfig)
     }
     getAllPorts() : number[]
     {
-        return Object.values(this.ports)
+        return Object.values(this.signalsConfig).map(signal => signal.port)
     }
 
     hasSignal(signal: string) : boolean
     {
-        return this.cache[signal] !== undefined
+        return this.signalsConfig[signal] !== undefined
     }
-    getSignalPort(signal: string) : number | undefined
+    getSignal(signal: string) : ConfigSignalInputModel | undefined
     {
-        return this.ports[signal]
-    }
-    getSignalTokens(signal: string) : string[]
-    {
-        return Object.keys(this.cache[signal] ?? {})
+        return this.signalsConfig[signal]
     }
 
     hasPort(port: number) : boolean
@@ -57,17 +42,11 @@ export class SignalInputService
 
     add(id: string, config: ConfigSignalInputModel)
     {
-        this.ports[id] = config.port
-        this.cache[id] = {}
-        
-        for(const token of config.tokens){
-            this.cache[id][token] = new SignalModel(token, 0, 0)
-        }
+        this.signalsConfig[id] = config
     }
 
     removeSignal(signal: string)
     {
-        delete this.cache[signal]
-        delete this.ports[signal]
+        delete this.signalsConfig[signal]
     }
 }

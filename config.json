@@ -2,47 +2,43 @@
     "type" : "signal",
     "identifier": "aggregator",
     "tokens" : [
-        "BTCBUSD",
-        "BTCTUSD"
+        "BTCUSDT"
     ],
     "signals_input" : {
         "manual": {
             "port": 3003,
-            "tokens": ["BTCBUSD", "BTCTUSD"]
-        },
-        "linear-regression": {
-            "port": 3004,
-            "tokens": ["BTCBUSD", "BTCTUSD"]
+            "tokens": ["BTCUSDT"]
         }
     },
-    "identifiers_out": ["sum1", "average1", "nested1", "max1"],
+    "identifiers_out": ["sum1", "average1", "nested1", "max1", "negate1"],
     "signals_output" : {
         "sum1": {
             "type": "SUM",
-            "signals": ["manual", "linear-regression"],
-            "tokens": ["BTCBUSD"]
+            "signals": ["manual", "$max1", "$max1"],
+            "tokens": ["BTCUSDT"]
         },
         "average1": {
             "type": "AVERAGE",
-            "signals": ["manual", "linear-regression"],
-            "tokens": ["BTCBUSD"],
+            "signals": ["manual", "$min1", "$max1"],
+            "tokens": ["BTCUSDT"],
             "samples_required": 3
         },
         "min1": {
             "type": "MINIMUM",
-            "signals": ["manual", "linear-regression"],
-            "tokens": ["BTCBUSD"],
+            "signals": ["manual", "$negate1"],
+            "tokens": ["BTCUSDT"],
             "resets_every_tick": true
         },
         "max1": {
             "type": "MAXIMUM",
-            "signals": ["manual", "linear-regression"],
-            "tokens": ["BTCBUSD"]
+            "signals": ["manual", "$negate1"],
+            "tokens": ["BTCUSDT"],
+            "resets_every_tick_for_all": true
         },
-        "nested1": {
-            "type": "SUM",
-            "signals": ["$min1", "$sum1", "manual"],
-            "tokens": ["BTCBUSD"]
+        "negate1": {
+            "type": "NEGATE",
+            "signals": ["manual"],
+            "tokens": ["BTCUSDT"]
         }
     }
 }

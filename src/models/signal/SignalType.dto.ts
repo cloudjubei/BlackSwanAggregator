@@ -3,7 +3,8 @@ enum SignalType
     SUM = 'SUM',
     AVERAGE = 'AVERAGE',
     MINIMUM = 'MINIMUM',
-    MAXIMUM = 'MAXIMUM'
+    MAXIMUM = 'MAXIMUM',
+    NEGATE = 'NEGATE'
 }
 export default SignalType
 
