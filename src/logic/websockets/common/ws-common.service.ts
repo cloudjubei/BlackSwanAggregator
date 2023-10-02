@@ -11,9 +11,4 @@ export class WebsocketsService
     {
         this.server.emit(type, message)
     }
-
-    sendMessageToRoom(type: string, message: any, roomId: string)
-    {
-        this.server.to(roomId).emit(type, message)
-    }
 }

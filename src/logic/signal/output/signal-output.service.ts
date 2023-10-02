@@ -104,7 +104,7 @@ export class SignalOutputService
         }
 
         const actions = this.getDependencyActions(id, token, signalConfig)
-        const action = this.processActions(actions, signalConfig.type)
+        const action = this.processActions(actions, signalConfig)
 
         return new SignalModel(token, action, Date.now(), 1)
     }
@@ -141,19 +141,19 @@ export class SignalOutputService
                 neededActions.push(this.cache[signal][token][i].action)
             }
 
-            const signalAction = this.processActions(neededActions, signalConfig.type, true)
+            const signalAction = this.processActions(neededActions, signalConfig, true)
             actions.push(signalAction)
         }
         return actions
     }
 
-    private processActions(actions: number[], type: SignalType, fastForwardSingleValue: Boolean = false) : number
+    private processActions(actions: number[], signalConfig: ConfigSignalOutputModel, fastForwardSingleValue: Boolean = false) : number
     {   
-        const action = this.getActionsValue(actions, type, fastForwardSingleValue)
+        const action = this.getActionsValue(actions, signalConfig, fastForwardSingleValue)
         return Math.max(-1, Math.min(1, action))
     }
 
-    private getActionsValue(actions: number[], type: SignalType, fastForwardSingleValue: Boolean) : number
+    private getActionsValue(actions: number[], signalConfig: ConfigSignalOutputModel, fastForwardSingleValue: Boolean) : number
     {
         if (actions.length === 0){
             return 0
@@ -161,15 +161,21 @@ export class SignalOutputService
         if (fastForwardSingleValue && actions.length === 1) { 
             return actions[0] 
         }
-        switch(type){
+        switch(signalConfig.type){
             case SignalType.AVERAGE:
                 return actions.reduce((acc, a) => acc + a, 0) / actions.length
             case SignalType.MINIMUM:
                 return actions.reduce((acc, a) => a < acc ? a : acc, Number.POSITIVE_INFINITY)
             case SignalType.MAXIMUM:
                 return actions.reduce((acc, a) => a > acc ? a : acc, Number.NEGATIVE_INFINITY)
+            case SignalType.MULTIPLY:
+                return actions.reduce((acc, a) => acc * a, 1)
             case SignalType.NEGATE:
                 return -actions[0]
+            case SignalType.CONSTANT_MULTIPLY:
+                return actions[0] * (signalConfig.constant ?? 1)
+            case SignalType.CONSTANT_OFFSET:
+                return actions[0] + (signalConfig.constant ?? 0)
             default:
                 return actions.reduce((acc, a) => acc + a, 0)
         }

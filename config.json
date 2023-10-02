@@ -10,7 +10,7 @@
             "tokens": ["BTCUSDT"]
         }
     },
-    "identifiers_out": ["sum1", "average1", "nested1", "max1", "negate1"],
+    "identifiers_out": ["sum1", "average1", "min1", "max1", "negate1", "constant_offset1"],
     "signals_output" : {
         "sum1": {
             "type": "SUM",
@@ -22,6 +22,11 @@
             "signals": ["manual", "$min1", "$max1"],
             "tokens": ["BTCUSDT"],
             "samples_required": 3
+        },
+        "multiply1": {
+            "type": "MULTIPLY",
+            "signals": ["manual", "$constant_offset1"],
+            "tokens": ["BTCUSDT"]
         },
         "min1": {
             "type": "MINIMUM",
@@ -39,6 +44,18 @@
             "type": "NEGATE",
             "signals": ["manual"],
             "tokens": ["BTCUSDT"]
+        },
+        "constant_multiply1": {
+            "type": "CONSTANT_MULTIPLY",
+            "signals": ["manual"],
+            "tokens": ["BTCUSDT"],
+            "constant": 1.5
+        },
+        "constant_offset1": {
+            "type": "CONSTANT_OFFSET",
+            "signals": ["manual"],
+            "tokens": ["BTCUSDT"],
+            "constant": -0.15
         }
     }
 }

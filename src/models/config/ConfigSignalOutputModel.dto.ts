@@ -8,4 +8,5 @@ export default class ConfigSignalOutputModel
     resets_every_tick: boolean = false
     resets_every_tick_for_all: boolean = false
     samples_required: number = 1
+    constant: number = 0
 }

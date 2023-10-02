@@ -4,7 +4,10 @@ enum SignalType
     AVERAGE = 'AVERAGE',
     MINIMUM = 'MINIMUM',
     MAXIMUM = 'MAXIMUM',
-    NEGATE = 'NEGATE'
+    MULTIPLY = 'MULTIPLY',
+    NEGATE = 'NEGATE',
+    CONSTANT_MULTIPLY = 'CONSTANT_MULTIPLY',
+    CONSTANT_OFFSET = 'CONSTANT_OFFSET'
 }
 export default SignalType
 
