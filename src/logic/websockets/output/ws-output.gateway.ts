@@ -24,6 +24,6 @@ export class WSOutputGateway
         console.log(`MESSAGE_GET_LATEST: ${message}`)
         const m = JSON.parse(message) as WSSignalRequest
 
-        return await this.signalOutputService.getLatest(m.identifier, m.tokenPair)
+        return await this.signalOutputService.getLatest(m.identifier, m.tokenPair, m.interval)
     }
 }

@@ -2,9 +2,11 @@ import { Injectable, OnApplicationBootstrap } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { WSOutputService } from '../websockets/output/ws-output.service'
 import SignalModel from 'src/models/signal/SignalModel.dto'
-import { SignalInputService } from './input/signal-input.service'
 import { WSInputService } from '../websockets/input/ws-input.service'
 import { SignalOutputService } from './output/signal-output.service'
+import { IdentityService } from '../identity/identity.service'
+import PriceKlineModel from 'src/models/price/PriceKlineModel.dto'
+import TokenIndicatorsModel from 'src/models/indicators/TokenIndicatorsModel.dto'
 
 @Injectable()
 export class SignalService implements OnApplicationBootstrap
@@ -15,7 +17,7 @@ export class SignalService implements OnApplicationBootstrap
     constructor(
         private readonly wsInputService: WSInputService,
         private readonly wsOutputService: WSOutputService,
-        private readonly signalInputService: SignalInputService,
+        private readonly identityService: IdentityService,
         private readonly signalOutputService: SignalOutputService,
     ){}
 
@@ -30,11 +32,10 @@ export class SignalService implements OnApplicationBootstrap
 
         console.log(`SignalService setup ${Date.now()}`)
 
+        this.signalOutputService.setup()
         this.setupWebsocketConnections()
 
         this.hasSetup = true
-
-        console.log(`SignalService done`)
     }
 
     @Cron(CronExpression.EVERY_SECOND)
@@ -46,6 +47,8 @@ export class SignalService implements OnApplicationBootstrap
 
         this.isUpdating = true
         try{
+            await this.updatePricesInput()
+            await this.updateIndicatorsInput()
             await this.updateSignalsInput()
             await this.updateSignalsOutput()
         }catch(error){
@@ -56,32 +59,71 @@ export class SignalService implements OnApplicationBootstrap
 
     private setupWebsocketConnections()
     {
-        const signalPorts = this.signalInputService.getAllPorts()
-        for(const port of signalPorts){
+        for(const token of Object.keys(this.identityService.config.prices_input)){
+            const port = this.identityService.config.prices_input[token]
+            this.wsInputService.connect(port)
+        }
+        for(const id of Object.keys(this.identityService.config.signals_input)){
+            const port = this.identityService.config.signals_input[id].port
             this.wsInputService.connect(port)
         }
 
-        const signalIds = this.signalInputService.getAllSignals()
-        for(const signalId of signalIds){
-            const signalConfig = this.signalInputService.getSignal(signalId)
-            for(const token of signalConfig.tokens){
-                this.wsInputService.listen(signalConfig.port, token, (signal) => {
-                    console.log("LISTENED TO SIGNAL: ", signal)
-                })
+        // for(const id of Object.keys(this.identityService.config.signals_input)){
+        //     const signalConfig = this.identityService.config.signals_input[id]
+        //     for(const token of signalConfig.tokens){
+        //         this.wsInputService.listen(signalConfig.port, token, (signal) => {
+        //             console.log("LISTENED TO SIGNAL: ", signal)
+        //         })
+        //     }
+        // }
+    }
+
+    private async updatePricesInput()
+    {
+        for(const tokenPair of Object.keys(this.identityService.config.prices_input)){
+            const port = this.identityService.config.prices_input[tokenPair]
+            for(const interval of this.identityService.config.intervals){
+                try{
+                    const price = await this.wsInputService.sendMessage(port, "price_latestKline", JSON.stringify({ tokenPair, interval }))
+                    if (price){
+                        this.signalOutputService.storePrice(price as PriceKlineModel)
+                    }
+                }catch(error){
+                    // TODO: handle multiple timeouts
+                    console.error("updatePricesInput tokenPair: " + tokenPair +  "interval: " + interval + " port: " + port + " error: ", error)
+                }
+            }
+        }
+    }
+
+    private async updateIndicatorsInput()
+    {
+        for(const tokenPair of Object.keys(this.identityService.config.prices_input)){
+            const port = this.identityService.config.prices_input[tokenPair]
+            for(const interval of this.identityService.config.intervals){
+
+                try{
+                    const indicators = await this.wsInputService.sendMessage(port, "indicators_latestInterval", JSON.stringify({ tokenPair, interval }))
+                    if (indicators){
+                        this.signalOutputService.storeIndicators(indicators as TokenIndicatorsModel)
+                    }
+                }catch(error){
+                    // TODO: handle multiple timeouts
+                    console.error("updateIndicatorsInput tokenPair: " + tokenPair +  "interval: " + interval + " port: " + port + " error: ", error)
+                }
             }
         }
     }
 
     private async updateSignalsInput()
     {
-        const ids = this.signalInputService.getAllSignals()
-        for(const id of ids){
-            const signalConfig = this.signalInputService.getSignal(id)
+        for(const id of Object.keys(this.identityService.config.signals_input)){
+            const signalConfig = this.identityService.config.signals_input[id]
             for(const token of signalConfig.tokens){
                 try{
                     const signal = await this.wsInputService.sendMessage(signalConfig.port, "signal_latest", token)
                     if (signal){
-                        this.signalOutputService.storeInCache(id, signal as SignalModel)
+                        this.signalOutputService.storeSignal(id, signal as SignalModel)
                     }
                 }catch(error){
                     // TODO: handle multiple timeouts
@@ -95,11 +137,17 @@ export class SignalService implements OnApplicationBootstrap
     {
         const ids = this.signalOutputService.getAllSignals()
         for(const id of ids){
-            for(const token of this.signalOutputService.getSignalTokens(id)){
-                const signal = this.signalOutputService.updateSignal(id, token)
+            const signalConfig = this.identityService.config.signals_output[id]
+            for(const token of signalConfig.tokens){
+                for(const interval of signalConfig.intervals){
+                    const signal = this.signalOutputService.updateSignal(id, token, interval)
 
-                this.signalOutputService.storeInCache(id, signal)
-                await this.wsOutputService.sendUpdate(id, token, signal.action)
+                    console.log("updateSignalsOutput storeSignal signal.timestamp: " + signal.timestamp)
+                    console.log("this.signalOutputService.signalCaches[id].cache[token][interval]: ")
+                    console.log(this.signalOutputService.signalCaches['rsi9'].cache[token][interval])
+                    this.signalOutputService.storeSignal(id, signal)
+                    await this.wsOutputService.sendUpdate(id, signal)
+                }
             }
         }
     }

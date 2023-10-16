@@ -9,9 +9,9 @@ export class SignalOutputController
 {
     constructor(private readonly signalOutputService: SignalOutputService) {}
 
-    @Get('latest/:id/:tokenPair')
-    async getLatest(@Param('id') id: string, @Param('tokenPair') tokenPair: string) : Promise<SignalModel>
+    @Get('latest/:id/:tokenPair/:interval')
+    async getLatest(@Param('id') id: string, @Param('tokenPair') tokenPair: string, @Param('interval') interval: string) : Promise<SignalModel>
     {
-        return await this.signalOutputService.getLatest(id, tokenPair)
+        return await this.signalOutputService.getLatest(id, tokenPair, interval)
     }
 }

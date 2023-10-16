@@ -11,6 +11,30 @@ export class IdentityService
     {
         const configFile = getFile('config.json')
         this.config = JSON.parse(configFile) as ConfigModel
+
+        const tokens = this.getTokens()
+
+        for(const id of Object.keys(this.config.signals_input)){
+            const signalConfig = this.config.signals_input[id]
+            if (!signalConfig["tokens"]){
+                this.config.signals_input[id]["tokens"] = tokens
+            }
+            if (!signalConfig["intervals"]){
+                this.config.signals_input[id]["intervals"] = this.config.intervals
+            }
+        }
+        for(const id of Object.keys(this.config.signals_output)){
+            const signalConfig = this.config.signals_output[id]
+            if (!signalConfig["tokens"]){
+                this.config.signals_output[id]["tokens"] = tokens
+            }
+            if (!signalConfig["intervals"]){
+                this.config.signals_output[id]["intervals"] = this.config.intervals
+            }
+            if (!signalConfig["samples_required"]){
+                this.config.signals_output[id]["samples_required"] = 1
+            }
+        }
     }
 
     getConfig() : ConfigModel
@@ -18,12 +42,8 @@ export class IdentityService
         return this.config
     }
 
-    getOutSignalTokens() : { [id: string] : string[] }
+    getTokens() : string[]
     {
-        const out = {}
-        for(const id of this.config.identifiers_out){
-            out[id] = this.config.signals_output[id].tokens
-        }
-        return out
+        return Object.keys(this.config.prices_input)
     }
 }

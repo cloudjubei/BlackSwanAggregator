@@ -27,7 +27,7 @@ export class WSInputService
         }
     }
 
-    async sendMessage(port: number, type: string, message: string) : Promise<any>
+    async sendMessage(port: number, type: string, message: any) : Promise<any>
     {
         const socket = this.sockets[port]
         if (socket){

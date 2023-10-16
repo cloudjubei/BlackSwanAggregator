@@ -1,20 +1,19 @@
 import { ApiProperty } from "@nestjs/swagger"
 import { Timestamp } from "../swagger.consts"
 
-export default class SignalModel
+export default class TokenIndicatorsModel
 {
     @ApiProperty() tokenPair: string
     @ApiProperty() interval: string
+    @ApiProperty() price: string
     @ApiProperty(Timestamp) timestamp: number
-    @ApiProperty() action: number
-    @ApiProperty() certainty: number = 1.0 // percentage
+    @ApiProperty() indicators: { [id:string] : string }
 
-    constructor(tokenPair: string, interval: string, timestamp: number, action: number, certainty: number = 1.0)
-    {
+    constructor(tokenPair: string, interval: string, price: string, timestamp: number, indicators: {[id:string] : string}){
         this.tokenPair = tokenPair
         this.interval = interval
+        this.price = price
         this.timestamp = timestamp
-        this.action = action
-        this.certainty = certainty
+        this.indicators = indicators
     }
 }

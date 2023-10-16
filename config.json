@@ -1,61 +1,61 @@
 {
     "type" : "signal",
     "identifier": "aggregator",
-    "tokens" : [
-        "BTCUSDT"
+    "intervals" : [
+        "1s",
+        "1m",
+        "5m",
+        "15m",
+        "1d"
+    ],
+    "prices_input" : {
+        "BTCUSDT": 3002,
+        "BTCFDUSD": 3002
+    },
+    "indicators_input": [
+        "rsi9", "rsi11", "rsi14", "rsi20", "rsi30", 
+        "williams14", "williams30", 
+        "ema12", "ema20", "ema26", "ema50", "ema200", 
+        "macdLine", "macdSignal9", "macd9", 
+        "bollinger20Mid", "bollinger20SD", "bollinger20High", "bollinger20Low"
     ],
     "signals_input" : {
-        "manual": {
-            "port": 3003,
-            "tokens": ["BTCUSDT"]
-        }
     },
-    "identifiers_out": ["sum1", "average1", "min1", "max1", "negate1", "constant_offset1"],
+    "available_operations": ["GREATERTHAN", "LESSTHAN", "OFFSET", "MULTIPLY", "SUM", "NEGATE", "AND", "OR", "MIN", "MAX"],
     "signals_output" : {
-        "sum1": {
-            "type": "SUM",
-            "signals": ["manual", "$max1", "$max1"],
-            "tokens": ["BTCUSDT"]
+        "bollingerHighSignal": {
+            "inputs": ["price", "bollinger20High"],
+            "operation": "(GREATERTHAN, $price, $bollinger20High, -1, 0)"
         },
-        "average1": {
-            "type": "AVERAGE",
-            "signals": ["manual", "$min1", "$max1"],
+        "bollingerLowSignal": {
+            "inputs": ["price", "bollinger20Low"],
+            "operation": "(LESSTHAN, $price, $bollinger20Low, 1, 0)"
+        },
+        "rsi30Overbought": {
+            "inputs": ["rsi30"],
+            "operation": "(GREATERTHAN, $rsi30, 70, -1, 0)"
+        },
+        "rsi30Oversold": {
+            "inputs": ["rsi30"],
+            "operation": "(LESSTHAN, $rsi30, 30, 1, 0)"
+        },
+        "rsi9Overbought": {
+            "inputs": ["rsi9"],
+            "operation": "(GREATERTHAN, $rsi9, 70, -1, 0)"
+        },
+        "rsi9Oversold": {
+            "inputs": ["rsi9"],
             "tokens": ["BTCUSDT"],
-            "samples_required": 3
+            "intervals": ["1s"],
+            "operation": "(LESSTHAN, $rsi9, 30, 1, 0)"
         },
-        "multiply1": {
-            "type": "MULTIPLY",
-            "signals": ["manual", "$constant_offset1"],
-            "tokens": ["BTCUSDT"]
+        "bollingerHighWithRSI30Overbought": {
+            "inputs": ["$bollingerHighSignal", "$rsi9Overbought"],
+            "operation": "(AND, $bollingerHighSignal, $rsi9Overbought, -1, 0)"
         },
-        "min1": {
-            "type": "MINIMUM",
-            "signals": ["manual", "$negate1"],
-            "tokens": ["BTCUSDT"],
-            "resets_every_tick": true
-        },
-        "max1": {
-            "type": "MAXIMUM",
-            "signals": ["manual", "$negate1"],
-            "tokens": ["BTCUSDT"],
-            "resets_every_tick_for_all": true
-        },
-        "negate1": {
-            "type": "NEGATE",
-            "signals": ["manual"],
-            "tokens": ["BTCUSDT"]
-        },
-        "constant_multiply1": {
-            "type": "CONSTANT_MULTIPLY",
-            "signals": ["manual"],
-            "tokens": ["BTCUSDT"],
-            "constant": 1.5
-        },
-        "constant_offset1": {
-            "type": "CONSTANT_OFFSET",
-            "signals": ["manual"],
-            "tokens": ["BTCUSDT"],
-            "constant": -0.15
+        "bollingerLowWithRSI30Oversold": {
+            "inputs": ["price", "bollinger20LowSignal", "$rsi30Oversold"],
+            "operation": "(AND, $bollinger20LowSignal, $rsi30Oversold, 1, 0)"
         }
     }
 }

@@ -10,7 +10,6 @@ export const IDENTITY_PREFIX ='identity_'
 export const MESSAGE_GET_TYPE = IDENTITY_PREFIX + 'type'
 export const MESSAGE_GET_IDENTIFIER = IDENTITY_PREFIX + 'identifier'
 export const MESSAGE_GET_TOKENS = IDENTITY_PREFIX + 'tokens'
-export const MESSAGE_GET_IDENTIFIERS_OUT = IDENTITY_PREFIX + 'identifiers_out'
 
 
 @WebSocketGateway(COMMON_GATEWAY)

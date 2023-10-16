@@ -3,11 +3,12 @@ import ConfigSignalOutputModel from "./ConfigSignalOutputModel.dto"
 
 export default class ConfigModel
 {
-    type: string = "price"
-    identifier: string = "test"
-    tokens: string[] = []
-    identifiers_out: string[] = []
+    type: string = "signal"
+    identifier: string = "aggregator"
+    intervals: string[] = []
+    indicators_input: string[] = []
 
-    signals_input: { [key:string] : ConfigSignalInputModel } = {}
-    signals_output: { [key:string] : ConfigSignalOutputModel } = {}
+    prices_input: { [token:string] : number } = {}
+    signals_input: { [id:string] : ConfigSignalInputModel } = {}
+    signals_output: { [id:string] : ConfigSignalOutputModel } = {}
 }
