@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common'
-import { IdentityService } from 'src/logic/identity/identity.service'
-import { SignalCache } from 'src/models/cache/SignalCache'
-import ConfigSignalOutputModel from 'src/models/config/ConfigSignalOutputModel.dto'
-import TokenIndicatorsModel from 'src/models/indicators/TokenIndicatorsModel.dto'
-import PriceKlineModel from 'src/models/price/PriceKlineModel.dto'
-import SignalModel from 'src/models/signal/SignalModel.dto'
-import SignalOperation from 'src/models/signal/SignalOperation'
+import { IdentityService } from 'logic/identity/identity.service'
+import ConfigSignalOutputModel from 'models/config/ConfigSignalOutputModel.dto'
+import SignalOperation from 'models/signal/SignalOperation'
+import SignalCache from 'commons/models/cache/SignalCache'
+import SignalModel from 'commons/models/signal/SignalModel.dto'
+import PriceKlineModel from 'commons/models/price/PriceKlineModel.dto'
+import TokenIndicatorsModel from 'commons/models/indicators/TokenIndicatorsModel.dto'
 
 @Injectable()
 export class SignalOutputService
@@ -51,7 +51,7 @@ export class SignalOutputService
 
     storePrice(price: PriceKlineModel)
     {
-        this.signalCaches["price"].storeSignal(new SignalModel(price.tokenPair, price.interval, price.timestamp_open, parseFloat(price.price_close), 1))
+        this.signalCaches["price"].storeSignal(new SignalModel(price.tokenPair, price.interval, price.timestamp, parseFloat(price.price), 1))
     }
 
     storeIndicators(indicators: TokenIndicatorsModel)

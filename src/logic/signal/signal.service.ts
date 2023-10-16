@@ -1,12 +1,12 @@
 import { Injectable, OnApplicationBootstrap } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { WSOutputService } from '../websockets/output/ws-output.service'
-import SignalModel from 'src/models/signal/SignalModel.dto'
 import { WSInputService } from '../websockets/input/ws-input.service'
 import { SignalOutputService } from './output/signal-output.service'
 import { IdentityService } from '../identity/identity.service'
-import PriceKlineModel from 'src/models/price/PriceKlineModel.dto'
-import TokenIndicatorsModel from 'src/models/indicators/TokenIndicatorsModel.dto'
+import SignalModel from 'commons/models/signal/SignalModel.dto'
+import PriceKlineModel from 'commons/models/price/PriceKlineModel.dto'
+import TokenIndicatorsModel from 'commons/models/indicators/TokenIndicatorsModel.dto'
 
 @Injectable()
 export class SignalService implements OnApplicationBootstrap
@@ -141,10 +141,6 @@ export class SignalService implements OnApplicationBootstrap
             for(const token of signalConfig.tokens){
                 for(const interval of signalConfig.intervals){
                     const signal = this.signalOutputService.updateSignal(id, token, interval)
-
-                    console.log("updateSignalsOutput storeSignal signal.timestamp: " + signal.timestamp)
-                    console.log("this.signalOutputService.signalCaches[id].cache[token][interval]: ")
-                    console.log(this.signalOutputService.signalCaches['rsi9'].cache[token][interval])
                     this.signalOutputService.storeSignal(id, signal)
                     await this.wsOutputService.sendUpdate(id, signal)
                 }

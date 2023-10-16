@@ -1,8 +1,8 @@
 export default class ConfigSignalOutputModel
 {
+    tokens: string[];
+    intervals: string[];
     inputs: string[]
-    tokens: string[]
-    intervals: string[]
     
     operation: string
 

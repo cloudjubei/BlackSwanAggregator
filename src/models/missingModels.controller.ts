@@ -1,6 +1,6 @@
-import StringObject from './StringObject.dto'
 import { Controller } from '@nestjs/common'
 import { ApiExtraModels } from '@nestjs/swagger'
+import StringObject from 'commons/models/StringObject.dto'
 
 @ApiExtraModels(StringObject)
 @Controller()

@@ -4,9 +4,9 @@ import {
     MessageBody
   } from '@nestjs/websockets'
 import { COMMON_GATEWAY } from '../websockets.gateway'
-import SignalModel from 'src/models/signal/SignalModel.dto'
-import WSSignalRequest from 'src/models/websockets/WSSignalRequest.dto'
-import { SignalOutputService } from 'src/logic/signal/output/signal-output.service'
+import WSSignalRequest from 'models/websockets/WSSignalRequest.dto'
+import { SignalOutputService } from 'logic/signal/output/signal-output.service'
+import SignalModel from 'commons/models/signal/SignalModel.dto'
   
 export const SIGNAL_PREFIX ='signal_'
 export const MESSAGE_GET_LATEST = SIGNAL_PREFIX + 'latest'

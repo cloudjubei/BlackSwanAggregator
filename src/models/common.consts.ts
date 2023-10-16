@@ -1,1 +1,0 @@
-export type StringMapType = { [id:string] : string }

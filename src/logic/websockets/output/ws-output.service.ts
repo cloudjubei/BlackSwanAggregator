@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { WebsocketsService } from '../common/ws-common.service'
-import SignalModel from 'src/models/signal/SignalModel.dto'
+import SignalModel from 'commons/models/signal/SignalModel.dto'
 
 @Injectable()
 export class WSOutputService

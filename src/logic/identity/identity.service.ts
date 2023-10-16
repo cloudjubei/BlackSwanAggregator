@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { getFile } from 'src/lib/storageUtils'
-import ConfigModel from 'src/models/config/ConfigModel.dto'
+import StorageUtils from 'commons/lib/storageUtils'
+import ConfigModel from 'models/config/ConfigModel.dto'
 
 @Injectable()
 export class IdentityService
@@ -9,7 +9,7 @@ export class IdentityService
 
     constructor()
     {
-        const configFile = getFile('config.json')
+        const configFile = StorageUtils.getFile('config.json')
         this.config = JSON.parse(configFile) as ConfigModel
 
         const tokens = this.getTokens()

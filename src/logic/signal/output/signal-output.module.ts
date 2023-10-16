@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 import { SignalOutputService } from './signal-output.service'
 import { SignalOutputController } from './signal-output.controller'
-import { IdentityModule } from 'src/logic/identity/identity.module'
+import { IdentityModule } from 'logic/identity/identity.module'
 
 @Module({
     imports: [

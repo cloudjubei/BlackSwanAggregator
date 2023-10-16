@@ -1,7 +1,7 @@
 import { Controller, Get, Param, Req, UseGuards, Post, Body, Query } from '@nestjs/common'
 import { ApiQuery, ApiTags } from "@nestjs/swagger"
-import SignalModel from 'src/models/signal/SignalModel.dto'
 import { SignalOutputService } from './signal-output.service'
+import SignalModel from 'commons/models/signal/SignalModel.dto'
 
 @ApiTags("signal")
 @Controller("signal")

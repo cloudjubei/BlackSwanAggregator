@@ -1,4 +1,4 @@
-import ConfigSignalInputModel from "./ConfigSignalInputModel.dto"
+import ConfigSignalInputModel from 'commons/models/config/ConfigSignalInputModel.dto'
 import ConfigSignalOutputModel from "./ConfigSignalOutputModel.dto"
 
 export default class ConfigModel
