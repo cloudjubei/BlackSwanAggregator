@@ -9,8 +9,8 @@
         "1d"
     ],
     "prices_input" : {
-        "BTCUSDT": 3002,
-        "BTCFDUSD": 3002
+        "BTCUSDT": { "port": 3002 },
+        "BTCFDUSD": { "port": 3002 }
     },
     "indicators_input": [
         "rsi9", "rsi11", "rsi14", "rsi20", "rsi30", 

@@ -4,32 +4,32 @@ import { Socket, io } from "socket.io-client"
 @Injectable()
 export class WSInputService
 {
-    private sockets: { [key: number]: Socket } = {}
+    private sockets: { [key: string]: Socket } = {}
 
     constructor()
     {
     }
 
-    connect(port: number) : Socket
+    connect(url: string) : Socket
     {
-        const socket = io("http://localhost:" + port)
+        const socket = io(url)
 
-        this.sockets[port] = socket
+        this.sockets[url] = socket
 
         return socket
     }
 
-    listen(port: number, type: string, callback: (message: string) => void)
+    listen(url: string, type: string, callback: (message: string) => void)
     {
-        const socket = this.sockets[port]
+        const socket = this.sockets[url]
         if (socket){
             socket.on(type, callback)
         }
     }
 
-    async sendMessage(port: number, type: string, message: any) : Promise<any>
+    async sendMessage(url: string, type: string, message: any) : Promise<any>
     {
-        const socket = this.sockets[port]
+        const socket = this.sockets[url]
         if (socket){
             return await socket.timeout(100).emitWithAck(type, message)
         }

@@ -14,8 +14,18 @@ export class IdentityService
 
         const tokens = this.getTokens()
 
+        for(const id of Object.keys(this.config.prices_input)){
+            const priceConfig = this.config.prices_input[id]
+            if (!priceConfig["host"]){
+                this.config.prices_input[id]["host"] = "http://localhost"
+            }
+        }
+
         for(const id of Object.keys(this.config.signals_input)){
             const signalConfig = this.config.signals_input[id]
+            if (!signalConfig["host"]){
+                this.config.signals_input[id]["host"] = "http://localhost"
+            }
             if (!signalConfig["tokens"]){
                 this.config.signals_input[id]["tokens"] = tokens
             }

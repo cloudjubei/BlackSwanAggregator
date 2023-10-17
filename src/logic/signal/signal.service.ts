@@ -7,6 +7,7 @@ import { IdentityService } from '../identity/identity.service'
 import SignalModel from 'commons/models/signal/SignalModel.dto'
 import PriceKlineModel from 'commons/models/price/PriceKlineModel.dto'
 import TokenIndicatorsModel from 'commons/models/indicators/TokenIndicatorsModel.dto'
+import { ConfigConnectionInputModelUtils } from 'commons/models/config/ConfigConnectionInputModel.dto'
 
 @Injectable()
 export class SignalService implements OnApplicationBootstrap
@@ -60,12 +61,12 @@ export class SignalService implements OnApplicationBootstrap
     private setupWebsocketConnections()
     {
         for(const token of Object.keys(this.identityService.config.prices_input)){
-            const port = this.identityService.config.prices_input[token]
-            this.wsInputService.connect(port)
+            const config = this.identityService.config.prices_input[token]
+            this.wsInputService.connect(ConfigConnectionInputModelUtils.GetUrl(config))
         }
         for(const id of Object.keys(this.identityService.config.signals_input)){
-            const port = this.identityService.config.signals_input[id].port
-            this.wsInputService.connect(port)
+            const config = this.identityService.config.signals_input[id]
+            this.wsInputService.connect(ConfigConnectionInputModelUtils.GetUrl(config))
         }
 
         // for(const id of Object.keys(this.identityService.config.signals_input)){
@@ -81,16 +82,16 @@ export class SignalService implements OnApplicationBootstrap
     private async updatePricesInput()
     {
         for(const tokenPair of Object.keys(this.identityService.config.prices_input)){
-            const port = this.identityService.config.prices_input[tokenPair]
+            const config = this.identityService.config.prices_input[tokenPair]
             for(const interval of this.identityService.config.intervals){
                 try{
-                    const price = await this.wsInputService.sendMessage(port, "price_latestKline", JSON.stringify({ tokenPair, interval }))
+                    const price = await this.wsInputService.sendMessage(ConfigConnectionInputModelUtils.GetUrl(config), "price_latestKline", JSON.stringify({ tokenPair, interval }))
                     if (price){
                         this.signalOutputService.storePrice(price as PriceKlineModel)
                     }
                 }catch(error){
                     // TODO: handle multiple timeouts
-                    console.error("updatePricesInput tokenPair: " + tokenPair +  "interval: " + interval + " port: " + port + " error: ", error)
+                    console.error("updatePricesInput tokenPair: " + tokenPair +  "interval: " + interval + " url: " + ConfigConnectionInputModelUtils.GetUrl(config) + " error: ", error)
                 }
             }
         }
@@ -99,17 +100,16 @@ export class SignalService implements OnApplicationBootstrap
     private async updateIndicatorsInput()
     {
         for(const tokenPair of Object.keys(this.identityService.config.prices_input)){
-            const port = this.identityService.config.prices_input[tokenPair]
+            const config = this.identityService.config.prices_input[tokenPair]
             for(const interval of this.identityService.config.intervals){
-
                 try{
-                    const indicators = await this.wsInputService.sendMessage(port, "indicators_latestInterval", JSON.stringify({ tokenPair, interval }))
+                    const indicators = await this.wsInputService.sendMessage(ConfigConnectionInputModelUtils.GetUrl(config), "indicators_latestInterval", JSON.stringify({ tokenPair, interval }))
                     if (indicators){
                         this.signalOutputService.storeIndicators(indicators as TokenIndicatorsModel)
                     }
                 }catch(error){
                     // TODO: handle multiple timeouts
-                    console.error("updateIndicatorsInput tokenPair: " + tokenPair +  "interval: " + interval + " port: " + port + " error: ", error)
+                    console.error("updateIndicatorsInput tokenPair: " + tokenPair +  "interval: " + interval + " url: " + ConfigConnectionInputModelUtils.GetUrl(config) + " error: ", error)
                 }
             }
         }
@@ -121,13 +121,13 @@ export class SignalService implements OnApplicationBootstrap
             const signalConfig = this.identityService.config.signals_input[id]
             for(const token of signalConfig.tokens){
                 try{
-                    const signal = await this.wsInputService.sendMessage(signalConfig.port, "signal_latest", token)
+                    const signal = await this.wsInputService.sendMessage(ConfigConnectionInputModelUtils.GetUrl(signalConfig), "signal_latest", token)
                     if (signal){
                         this.signalOutputService.storeSignal(id, signal as SignalModel)
                     }
                 }catch(error){
                     // TODO: handle multiple timeouts
-                    console.error("updateSignals id: " + id + " port: " + signalConfig.port + " token: " + token + " error: ", error)
+                    console.error("updateSignals id: " + id + " url: " + ConfigConnectionInputModelUtils.GetUrl(signalConfig) + " token: " + token + " error: ", error)
                 }
             }
         }
