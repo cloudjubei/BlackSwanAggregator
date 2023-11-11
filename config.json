@@ -11,7 +11,8 @@
     "prices_input" : {
         "BTCUSDT": { "port": 3002 },
         "BTCFDUSD": { "port": 3002 },
-        "XRPUSDT": { "port": 3002 }
+        "XRPUSDT": { "port": 3002 },
+        "XRPFDUSD": { "port": 3002 }
     },
     "indicators_input": [
         "rsi9", "rsi11", "rsi14", "rsi20", "rsi30", 
