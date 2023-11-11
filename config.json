@@ -10,12 +10,13 @@
     ],
     "prices_input" : {
         "BTCUSDT": { "port": 3002 },
-        "BTCFDUSD": { "port": 3002 }
+        "BTCFDUSD": { "port": 3002 },
+        "XRPUSDT": { "port": 3002 }
     },
     "indicators_input": [
         "rsi9", "rsi11", "rsi14", "rsi20", "rsi30", 
         "williams14", "williams30", 
-        "ema12", "ema20", "ema26", "ema50", "ema200", 
+        "ema12", "ema20", "ema26", "ema30",
         "macdLine", "macdSignal9", "macd9", 
         "bollinger20Mid", "bollinger20SD", "bollinger20High", "bollinger20Low"
     ],
@@ -45,8 +46,6 @@
         },
         "rsi9Oversold": {
             "inputs": ["rsi9"],
-            "tokens": ["BTCUSDT"],
-            "intervals": ["1s"],
             "operation": "(LESSTHAN, $rsi9, 30, 1, 0)"
         },
         "bollingerHighWithRSI30Overbought": {

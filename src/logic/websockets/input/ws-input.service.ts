@@ -12,6 +12,10 @@ export class WSInputService
 
     connect(url: string) : Socket
     {
+        if (this.sockets[url]){
+            return this.sockets[url]
+        }
+        
         const socket = io(url)
 
         this.sockets[url] = socket
