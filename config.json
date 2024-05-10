@@ -11,12 +11,16 @@
     ],
     "prices_input" : {
         "BTCFDUSD": { "port": 3002 },
-        "XRPFDUSD": { "port": 3002 },
-        "ETHFDUSD": { "port": 3002 },
-        "DOTFDUSD": { "port": 3002 },
-        "DOGEFDUSD": { "port": 3002 },
-        "SOLFDUSD": { "port": 3002 },
-        "LTCFDUSD": { "port": 3002 }
+        "BTCUSDT": { "port": 3002 },
+        "BTCTUSD": { "port": 3002 },
+        "BTCUSDC": { "port": 3002 },
+        "ETHUSDT": { "port": 3002 },
+        "ETHUSDC": { "port": 3002 },
+        "XRPUSDT": { "port": 3002 },
+        "DOTUSDT": { "port": 3002 },
+        "DOGEUSDT": { "port": 3002 },
+        "SOLUSDT": { "port": 3002 },
+        "LTCUSDT": { "port": 3002 }
     },
     "indicators_input": [
         "rsi9", "rsi11", "rsi14", "rsi20", "rsi30", 
@@ -25,7 +29,8 @@
         "macdLine", "macdSignal9", "macd9", 
         "bollinger20Mid", "bollinger20SD", "bollinger20High", "bollinger20Low",
         "dump1", "dump3", "dump5", "dump10",
-        "pump1", "pump3", "pump5", "pump10"
+        "pump1", "pump3", "pump5", "pump10",
+        "lwStrategyUp", "lwStrategyDown"
     ],
     "signals_input" : {
     },
@@ -94,6 +99,14 @@
         "pump10_00_10": {
             "inputs": ["pump10"],
             "operation": "(GREATERTHAN, $pump10, 0.1, -1, 0)"
+        },
+        "lwStrategyUpSignal": {
+            "inputs": ["lwStrategyUp"],
+            "operation": "(GREATERTHAN, $lwStrategyUp, 0, 1, 0)"
+        },
+        "lwStrategyDownSignal": {
+            "inputs": ["lwStrategyDown"],
+            "operation": "(LESSTHAN, $lwStrategyDown, 1, -1, 0)"
         }
     }
 }
