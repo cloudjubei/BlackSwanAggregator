@@ -8,6 +8,7 @@
         "15m"
     ],
     "prices_input" : {
+        "BTCFDUSD": { "port": 3002 },
         "BTCUSDT": { "port": 3002 },
         "BTCTUSD": { "port": 3002 },
         "BTCUSDC": { "port": 3002 },
