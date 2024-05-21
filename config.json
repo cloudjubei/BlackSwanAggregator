@@ -10,11 +10,8 @@
     "prices_input" : {
         "BTCFDUSD": { "port": 3002 },
         "BTCUSDT": { "port": 3002 },
-        "BTCTUSD": { "port": 3002 },
-        "BTCUSDC": { "port": 3002 },
         "ETHUSDT": { "port": 3002 },
-        "ETHUSDC": { "port": 3002 },
-        "XRPUSDT": { "port": 3002 }
+        "ETHFDUSD": { "port": 3002 }
     },
     "indicators_input": [
         "rsi9", "rsi11", "rsi14", "rsi20", "rsi30", 
