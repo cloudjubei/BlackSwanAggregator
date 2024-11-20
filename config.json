@@ -43,6 +43,14 @@
         }
     },
     "signals_output" : {
+        "ai_model1": {
+            "inputs": ["price", "bollinger20Low"],
+            "operation": "(LESSTHAN, $price, $bollinger20Low, 1, 0)"
+        },
+        "ai_model2": {
+            "inputs": ["price", "bollinger20Low"],
+            "operation": "(LESSTHAN, $price, $bollinger20Low, 1, 0)"
+        },
         "bollingerHighSignal": {
             "inputs": ["price", "bollinger20High"],
             "operation": "(GREATERTHAN, $price, $bollinger20High, -1, 0)"
