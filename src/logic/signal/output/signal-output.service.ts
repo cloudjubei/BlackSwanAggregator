@@ -16,7 +16,7 @@ export class SignalOutputService
 
     private nestComplexities: { [id: string]: string[] } = {}
     private signalsByNestComplexity: string[] = []
-    private cacheSize = 10
+    private cacheSize = 100
 
     constructor(
         private readonly identityService: IdentityService

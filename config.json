@@ -2,16 +2,18 @@
     "type" : "signal",
     "identifier": "aggregator",
     "intervals" : [
-        "1s",
         "1m",
-        "5m",
-        "15m"
+        "15m",
+        "1h"
     ],
     "prices_input" : {
-        "BTCFDUSD": { "port": 3002 },
         "BTCUSDT": { "port": 3002 },
         "ETHUSDT": { "port": 3002 },
-        "ETHFDUSD": { "port": 3002 }
+        "DOGEUSDT": { "port": 3002 },
+        "ADAUSDT": { "port": 3002 },
+        "XRPUSDT": { "port": 3002 },
+        "SOLUSDT": { "port": 3002 },
+        "PEPEUSDT": { "port": 3002 }
     },
     "indicators_input": [
         "rsi9", "rsi11", "rsi14", "rsi20", "rsi30", 
@@ -24,9 +26,17 @@
         "lwStrategyUp", "lwStrategyDown"
     ],
     "signals_input" : {
+        "ai_model1": { "port": 3010 }
     },
-    "available_operations": ["GREATERTHAN", "LESSTHAN", "OFFSET", "MULTIPLY", "SUM", "NEGATE", "AND", "OR", "MIN", "MAX"],
+    "available_operations": ["CONST", "GREATERTHAN", "LESSTHAN", "OFFSET", "MULTIPLY", "SUM", "NEGATE", "AND", "OR", "MIN", "MAX"],
     "signals_output" : {
+        "ai_model1": {
+            "tokens": ["BTCUSDT", "ETHUSDT", "DOGEUSDT", "ADAUSDT", "XRPUSDT", "SOLUSDT", "PEPEUSDT"],
+            "inputs": ["ai_model1"],
+            "operation": "(REFERENCE, $ai_model1)",
+            "intervals": ["1m"],
+            "samples_required": 1
+        },
         "bollingerHighSignal": {
             "inputs": ["price", "bollinger20High"],
             "operation": "(GREATERTHAN, $price, $bollinger20High, -1, 0)"
