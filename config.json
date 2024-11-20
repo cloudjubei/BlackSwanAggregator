@@ -26,17 +26,23 @@
         "lwStrategyUp", "lwStrategyDown"
     ],
     "signals_input" : {
-        "ai_model1": { "port": 3010 }
+    },
+    "signals_input_TODO" : {
+        "ai_model1": { "port": 3010 },
+        "ai_model2": { "port": 3011 },
+        "ai_model3": { "port": 3012 }
     },
     "available_operations": ["CONST", "GREATERTHAN", "LESSTHAN", "OFFSET", "MULTIPLY", "SUM", "NEGATE", "AND", "OR", "MIN", "MAX"],
-    "signals_output" : {
+    "signals_output_TODO" : {
         "ai_model1": {
             "tokens": ["BTCUSDT", "ETHUSDT", "DOGEUSDT", "ADAUSDT", "XRPUSDT", "SOLUSDT", "PEPEUSDT"],
             "inputs": ["ai_model1"],
             "operation": "(REFERENCE, $ai_model1)",
             "intervals": ["1m"],
             "samples_required": 1
-        },
+        }
+    },
+    "signals_output" : {
         "bollingerHighSignal": {
             "inputs": ["price", "bollinger20High"],
             "operation": "(GREATERTHAN, $price, $bollinger20High, -1, 0)"
